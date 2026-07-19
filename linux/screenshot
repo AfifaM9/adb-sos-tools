@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Ensure output directory exists
+OUT_DIR="screenshots"
+mkdir -p "$OUT_DIR"
+
+# Generate exact YYYYMMDD_HHMMSS timestamp based on local machine execution
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+FILENAME="$OUT_DIR/Screenshot_${TIMESTAMP}.png"
+
+echo "Capturing screen..."
+# Stream the raw png capture straight from the device onto local disk
+adb shell screencap -p > "$FILENAME"
+
+if [ -s "$FILENAME" ]; then
+    echo "Saved to: $FILENAME"
+else
+    echo "Error: Screenshot capture failed or file is empty."
+    rm -f "$FILENAME"
+    exit 1
+fi
