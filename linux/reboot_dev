@@ -1,0 +1,18 @@
+#!/bin/bash
+
+TARGET=$(echo "$1" | tr '[:upper:]' '[:lower:]')
+
+case "$TARGET" in
+    "bootloader"|"fastboot")
+        echo "Rebooting device to bootloader mode..."
+        adb reboot bootloader
+        ;;
+    "os")
+        echo "Rebooting device to system OS..."
+        adb reboot
+        ;;
+    *)
+        echo "Usage: reboot_dev [bootloader | fastboot | os]"
+        exit 1
+        ;;
+esac
