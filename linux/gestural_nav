@@ -1,0 +1,50 @@
+#!/bin/bash
+
+ACTION=$(echo "$1" | tr '[:upper:]' '[:lower:]')
+
+if [ -z "$ACTION" ]; then
+    echo "Usage: gestural_nav [left | right | home | recents]"
+    exit 1
+fi
+
+# Fetch display width and height dynamically
+DIMENSIONS=$(adb shell wm size | grep -oE '[0-9]+x[0-9]+')
+WIDTH=$(echo "$DIMENSIONS" | cut -d'x' -f1)
+HEIGHT=$(echo "$DIMENSIONS" | cut -d'x' -f2)
+
+if [ -z "$WIDTH" ] || [ -z "$HEIGHT" ]; then
+    echo "Error: Could not retrieve device screen dimensions."
+    exit 1
+fi
+
+# Calculate coordinates dynamically
+MID_X=$((WIDTH / 2))
+MID_Y=$((HEIGHT / 2))
+START_Y=$((HEIGHT - 10))
+END_Y_HOME=$((HEIGHT - 400))
+END_Y_RECENTS=$((HEIGHT - 500))
+
+case "$ACTION" in
+    "left")
+        echo "Emulating swipe back from left edge..."
+        adb shell input swipe 10 "$MID_Y" 200 "$MID_Y" 150
+        ;;
+    "right")
+        echo "Emulating swipe back from right edge..."
+        adb shell input swipe $((WIDTH - 10)) "$MID_Y" $((WIDTH - 200)) "$MID_Y" 150
+        ;;
+    "home")
+        echo "Emulating quick swipe up for Home..."
+        adb shell input swipe "$MID_X" "$START_Y" "$MID_X" "$END_Y_HOME" 200
+        ;;
+    "recents")
+        echo "Emulating swipe up and hold for Recents..."
+        # An extended duration (e.g., 550ms) triggers the App Switcher overview
+        adb shell input swipe "$MID_X" "$START_Y" "$MID_X" "$END_Y_RECENTS" 550
+        ;;
+    *)
+        echo "Unknown gesture: $ACTION"
+        echo "Usage: gestural_nav [left | right | home | recents]"
+        exit 1
+        ;;
+esac
