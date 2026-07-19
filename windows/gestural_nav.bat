@@ -12,12 +12,10 @@ for /f "tokens=1,2 delims=x" %%a in ("%DIM%") do (
 
 if "%WIDTH%"=="" goto err_dim
 
-:: Coordinate calculations
 set /a MID_X=WIDTH / 2
 set /a MID_Y=HEIGHT / 2
 set /a START_Y=HEIGHT - 10
 set /a END_Y_HOME=HEIGHT - 400
-set /a END_Y_RECENTS=HEIGHT - 500
 set /a LEFT_SWIPE_END=200
 set /a RIGHT_SWIPE_START=WIDTH - 10
 set /a RIGHT_SWIPE_END=WIDTH - 200
@@ -38,8 +36,8 @@ if /i "%ACTION%"=="home" (
     goto push_done
 )
 if /i "%ACTION%"=="recents" (
-    echo Emulating swipe up and hold for Recents...
-    adb shell input swipe %MID_X% %START_Y% %MID_X% %END_Y_RECENTS% 550
+    echo Triggering Recents App Switcher via Keyevent...
+    adb shell input keyevent 187
     goto push_done
 )
 

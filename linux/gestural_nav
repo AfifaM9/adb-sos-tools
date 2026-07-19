@@ -17,12 +17,10 @@ if [ -z "$WIDTH" ] || [ -z "$HEIGHT" ]; then
     exit 1
 fi
 
-# Calculate coordinates dynamically
 MID_X=$((WIDTH / 2))
 MID_Y=$((HEIGHT / 2))
 START_Y=$((HEIGHT - 10))
 END_Y_HOME=$((HEIGHT - 400))
-END_Y_RECENTS=$((HEIGHT - 500))
 
 case "$ACTION" in
     "left")
@@ -38,9 +36,8 @@ case "$ACTION" in
         adb shell input swipe "$MID_X" "$START_Y" "$MID_X" "$END_Y_HOME" 200
         ;;
     "recents")
-        echo "Emulating swipe up and hold for Recents..."
-        # An extended duration (e.g., 550ms) triggers the App Switcher overview
-        adb shell input swipe "$MID_X" "$START_Y" "$MID_X" "$END_Y_RECENTS" 550
+        echo "Triggering Recents App Switcher via Keyevent..."
+        adb shell input keyevent 187
         ;;
     *)
         echo "Unknown gesture: $ACTION"
